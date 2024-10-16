@@ -3,70 +3,70 @@ import { FormBuilder, ReactiveFormsModule, FormGroup, Validators } from '@angula
 import { CommonModule } from '@angular/common'; // Importa CommonModule para *ngIf
 
 @Component({
-  selector: 'app-zodiaco',
-  standalone: true,
-  imports: [ReactiveFormsModule, CommonModule,],
-  templateUrl: './zodiaco.component.html',
-  styleUrl: './zodiaco.component.css'
+  selector: 'app-zodiaco', // Define el selector del componente
+  standalone: true, // Permite que el componente sea independiente
+  imports: [ReactiveFormsModule, CommonModule], // Importa módulos necesarios
+  templateUrl: './zodiaco.component.html', // Plantilla del componente
+  styleUrl: './zodiaco.component.css' // Archivo CSS del componente
 })
 export class ZodiacoComponent {
+  // Declaración del formulario y variables para almacenar los resultados
   formularioInformacionPersonal: FormGroup;
-  edad: number | null = null;
-  signoZodiacal: string | null = null;
-  imagenSignoZodiacal: string | null = null;
-  saludo: string | null = null;
+  edad: number | null = null; // Almacena la edad calculada
+  signoZodiacalChino: string | null = null; // Almacena el signo zodiacal chino
+  imagenSignoZodiacalChino: string | null = null; // Ruta de la imagen del signo zodiacal
+  saludo: string | null = null; // Cadena de saludo con el nombre completo del usuario
 
   constructor(private fb: FormBuilder) {
+    // Inicializa el formulario usando FormBuilder
     this.formularioInformacionPersonal = this.fb.group({
-      nombre: ['', Validators.required],
-      apellidoPaterno: ['', Validators.required],
-      apellidoMaterno: ['', Validators.required],
-      dia: ['', [Validators.required, Validators.min(1), Validators.max(31)]],
-      mes: ['', [Validators.required, Validators.min(1), Validators.max(12)]],
-      anio: ['', [Validators.required, Validators.min(1900), Validators.max(new Date().getFullYear())]],
-      sexo: ['', Validators.required]
+      nombre: ['', Validators.required], // Campo obligatorio para el nombre
+      apellidoPaterno: ['', Validators.required], // Campo obligatorio para el apellido paterno
+      apellidoMaterno: ['', Validators.required], // Campo obligatorio para el apellido materno
+      dia: ['', [Validators.required, Validators.min(1), Validators.max(31)]], // Día válido entre 1 y 31
+      mes: ['', [Validators.required, Validators.min(1), Validators.max(12)]], // Mes válido entre 1 y 12
+      anio: ['', [Validators.required, Validators.min(1900), Validators.max(new Date().getFullYear())]], // Año entre 1900 y el año actual
+      sexo: ['', Validators.required] // Campo obligatorio para seleccionar el sexo
     });
   }
 
+  // Método para calcular la edad y el signo zodiacal chino
   calcularEdadYSigno() {
-    const dia = this.formularioInformacionPersonal.get('dia')?.value;
-    const mes = this.formularioInformacionPersonal.get('mes')?.value;
-    const anio = this.formularioInformacionPersonal.get('anio')?.value;
-    const nombre = this.formularioInformacionPersonal.get('nombre')?.value;
-    const apellidoPaterno = this.formularioInformacionPersonal.get('apellidoPaterno')?.value;
-    const apellidoMaterno = this.formularioInformacionPersonal.get('apellidoMaterno')?.value;
+    const dia = this.formularioInformacionPersonal.get('dia')?.value; // Obtiene el día del formulario
+    const mes = this.formularioInformacionPersonal.get('mes')?.value; // Obtiene el mes del formulario
+    const anio = this.formularioInformacionPersonal.get('anio')?.value; // Obtiene el año del formulario
+    const nombre = this.formularioInformacionPersonal.get('nombre')?.value; // Obtiene el nombre
+    const apellidoPaterno = this.formularioInformacionPersonal.get('apellidoPaterno')?.value; // Obtiene el apellido paterno
+    const apellidoMaterno = this.formularioInformacionPersonal.get('apellidoMaterno')?.value; // Obtiene el apellido materno
 
-    const fechaNacimiento = new Date(anio, mes - 1, dia);
-    const hoy = new Date();
-    this.edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
+    // Calcula la edad basándose en la fecha actual y la fecha de nacimiento
+    const fechaNacimiento = new Date(anio, mes - 1, dia); // Crea una fecha de nacimiento
+    const hoy = new Date(); // Fecha actual
+    this.edad = hoy.getFullYear() - fechaNacimiento.getFullYear(); // Diferencia de años
     const diferenciaMeses = hoy.getMonth() - fechaNacimiento.getMonth();
     if (diferenciaMeses < 0 || (diferenciaMeses === 0 && hoy.getDate() < fechaNacimiento.getDate())) {
-      this.edad--;
+      this.edad--; // Ajusta la edad si el cumpleaños no ha pasado aún
     }
 
-    this.signoZodiacal = this.obtenerSignoZodiacal(dia, mes);
-    this.imagenSignoZodiacal = `assets/imagenes-zodiac/${this.signoZodiacal.toLowerCase()}.png`;
+    // Calcula el signo zodiacal chino basándose en el año de nacimiento
+    this.signoZodiacalChino = this.obtenerSignoZodiacalChino(anio);
+
+    // Define la ruta de la imagen correspondiente al signo zodiacal chino
+    this.imagenSignoZodiacalChino = `assets/imagenes-zodiac/${this.signoZodiacalChino.toLowerCase()}.png`;
+
+    // Forma el saludo con el nombre completo del usuario
     this.saludo = `${nombre} ${apellidoPaterno} ${apellidoMaterno}`;
   }
 
-  obtenerSignoZodiacal(dia: number, mes: number): string {
-    const signosZodiacales = [
-      { signo: 'Capricornio', inicio: new Date(0, 0, 1), fin: new Date(0, 0, 19) },
-      { signo: 'Acuario', inicio: new Date(0, 0, 20), fin: new Date(0, 1, 18) },
-      { signo: 'Piscis', inicio: new Date(0, 1, 19), fin: new Date(0, 2, 20) },
-      { signo: 'Aries', inicio: new Date(0, 2, 21), fin: new Date(0, 3, 19) },
-      { signo: 'Tauro', inicio: new Date(0, 3, 20), fin: new Date(0, 4, 20) },
-      { signo: 'Geminis', inicio: new Date(0, 4, 21), fin: new Date(0, 5, 20) },
-      { signo: 'Cancer', inicio: new Date(0, 5, 21), fin: new Date(0, 6, 22) },
-      { signo: 'Leo', inicio: new Date(0, 6, 23), fin: new Date(0, 7, 22) },
-      { signo: 'Virgo', inicio: new Date(0, 7, 23), fin: new Date(0, 8, 22) },
-      { signo: 'Libra', inicio: new Date(0, 8, 23), fin: new Date(0, 9, 22) },
-      { signo: 'Escorpio', inicio: new Date(0, 9, 23), fin: new Date(0, 10, 21) },
-      { signo: 'Sagitario', inicio: new Date(0, 10, 22), fin: new Date(0, 11, 21) },
-      { signo: 'Capricornio', inicio: new Date(0, 11, 22), fin: new Date(0, 11, 31) }
+  // Método para obtener el signo zodiacal chino según el año de nacimiento
+  obtenerSignoZodiacalChino(anio: number): string {
+    // Lista de signos zodiacales chinos
+    const signosZodiacalesChinos = [
+      'Rata', 'Buey', 'Tigre', 'Conejo', 'Dragon', 'Serpiente', 'Caballo', 'Cabra',
+      'Mono', 'Gallo', 'Perro', 'Cerdo'
     ];
-
-    const fechaNacimiento = new Date(0, mes - 1, dia);
-    return signosZodiacales.find(signo => fechaNacimiento >= signo.inicio && fechaNacimiento <= signo.fin)?.signo || '';
+    // Calcula el índice del signo zodiacal usando el año y la lógica del ciclo de 12 años
+    const indice = (anio - 1900) % 12;
+    return signosZodiacalesChinos[indice]; // Devuelve el signo zodiacal correspondiente
   }
 }
