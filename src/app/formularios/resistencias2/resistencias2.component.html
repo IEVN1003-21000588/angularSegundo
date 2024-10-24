@@ -1,0 +1,81 @@
+<div class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-md">
+  <h1 class="text-2xl font-bold mb-6 text-center">Calculadora de Resistencias</h1>
+
+  <form [formGroup]="formulario" class="space-y-4">
+    <div>
+      <label for="color1" class="block text-gray-700 font-bold mb-2">Primera Banda:</label>
+      <select formControlName="color1" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300">
+        <option value="" disabled selected>Elige un color</option>
+        <option *ngFor="let color of colores" [value]="color">{{ color }}</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="color2" class="block text-gray-700 font-bold mb-2">Segunda Banda:</label>
+      <select formControlName="color2" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300">
+        <option value="" disabled selected>Elige un color</option>
+        <option *ngFor="let color of colores" [value]="color">{{ color }}</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="color3" class="block text-gray-700 font-bold mb-2">Multiplicador:</label>
+      <select formControlName="color3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300">
+        <option value="" disabled selected>Elige un color</option>
+        <option *ngFor="let color of colores" [value]="color">{{ color }}</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="tolerancia" class="block text-gray-700 font-bold mb-2">Tolerancia:</label>
+      <div class="space-y-2">
+        <label class="inline-flex items-center">
+          <input type="radio" formControlName="tolerancia" [value]="'Oro'" class="form-radio text-yellow-500">
+          <span class="ml-2 text-gray-700">Oro</span>
+        </label><br>
+        <label class="inline-flex items-center">
+          <input type="radio" formControlName="tolerancia" [value]="'Plata'" class="form-radio text-gray-500">
+          <span class="ml-2 text-gray-700">Plata</span>
+        </label>
+      </div>
+    </div>
+
+    <button (click)="registrar()" class="w-200 bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
+      Guardar
+    </button>
+  </form>
+
+  <br>
+  <!-- Botón para imprimir los datos -->
+  <button type="button" (click)="imprimirDatos()" class="w-200 bg-green-500 text-white font-bold py-2 px-4 rounded-md hover:bg-green-600 focus:outline-none focus:ring focus:border-green-300">
+    Imprimir
+  </button>
+
+  <section class="mt-6" *ngIf="mostrarResultados">
+    <h2 class="text-lg font-bold mb-4">Resultados</h2>
+    <table class="min-w-full table-auto">
+      <thead>
+        <tr>
+          <th class="px-4 py-2">Banda 1</th>
+          <th class="px-4 py-2">Banda 2</th>
+          <th class="px-4 py-2">Multiplicador</th>
+          <th class="px-4 py-2">Tolerancia</th>
+          <th class="px-4 py-2">Valor</th>
+          <th class="px-4 py-2">Máximo</th>
+          <th class="px-4 py-2">Mínimo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let resistencia of resultado">
+          <td class="px-4 py-2" [style.background]="obtenerColorHex(resistencia.color1)">{{ resistencia.color1 }}</td>
+          <td class="px-4 py-2" [style.background]="obtenerColorHex(resistencia.color2)">{{ resistencia.color2 }}</td>
+          <td class="px-4 py-2" [style.background]="obtenerColorHex(resistencia.color3)">{{ resistencia.color3 }}</td>
+          <td class="px-4 py-2">{{ resistencia.tolerancia }}</td>
+          <td class="px-4 py-2">{{ resistencia.valor }}</td>
+          <td class="px-4 py-2">{{ resistencia.valorMaximo }}</td>
+          <td class="px-4 py-2">{{ resistencia.valorMinimo }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</div>
